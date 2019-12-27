@@ -15,7 +15,9 @@
 #include "interface/mmal/mmal.h"
 #include "interface/mmal/util/mmal_default_components.h"
 #include "interface/mmal/util/mmal_connection.h"
-#include <cairo/cairo.h>
+#include "interface/mmal/util/mmal_util.h"
+#include "interface/mmal/util/mmal_util_params.h"
+//#include <cairo/cairo.h>
 
 #define MMAL_CAMERA_PREVIEW_PORT 0
 #define MMAL_CAMERA_VIDEO_PORT 1
@@ -53,6 +55,7 @@ static void camera_video_buffer_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T
     struct timespec t2;
     uint8_t *local_overlay_buffer;
 
+
     //fprintf(stderr, "INFO:%s\n", __func__);
     if (frame_count == 0) {
         clock_gettime(CLOCK_MONOTONIC, &t1);
@@ -87,11 +90,15 @@ static void camera_video_buffer_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T
 
     if (output_buffer) {
         mmal_buffer_header_mem_lock(buffer);
+
         memcpy(output_buffer->data, buffer->data, buffer->length);
         // dim
         int x, y;
+/*
         for (x = 0; x < 600; x++) {
+
             for (y = 0; y < 100; y++) {
+	        fprintf(stderr, "[DEBUG:] loop: %d, %d - overlay at 0:\n", x, y);
                 if (local_overlay_buffer[(y * 600 + x) * 4] > 0) {
                     //copy luma Y
                     output_buffer->data[y * userdata->width + x ] = 0xdf;
@@ -103,14 +110,14 @@ static void camera_video_buffer_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T
                 }
             }
         }
-
+*/
         output_buffer->length = buffer->length;
         mmal_buffer_header_mem_unlock(buffer);
         if (mmal_port_send_buffer(userdata->encoder_input_port, output_buffer) != MMAL_SUCCESS) {
             fprintf(stderr, "ERROR: Unable to send buffer \n");
         }
     } else {
-        fprintf(stderr, "ERROR: mmal_queue_get (%d)\n", output_buffer);
+        fprintf(stderr, "ERROR: mmal_queue_get (%p)\n", output_buffer);
     }
 
 
@@ -146,6 +153,7 @@ static void camera_video_buffer_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T
             fprintf(stderr, "Error: Unable to return a buffer to the video port\n");
         }
     }
+
 }
 
 static void encoder_input_buffer_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer) {
@@ -187,12 +195,15 @@ int fill_port_buffer(MMAL_PORT_T *port, MMAL_POOL_T *pool) {
         MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(pool->queue);
         if (!buffer) {
             fprintf(stderr, "Unable to get a required buffer %d from pool queue\n", q);
+	    return -1;
         }
 
         if (mmal_port_send_buffer(port, buffer) != MMAL_SUCCESS) {
             fprintf(stderr, "Unable to send a buffer to port (%d)\n", q);
+	    return -1;
         }
     }
+    return 0;
 }
 
 int setup_camera(PORT_USERDATA *userdata) {
@@ -459,8 +470,8 @@ int main(int argc, char** argv) {
     MMAL_STATUS_T status;
 
 
-    cairo_surface_t *surface,*surface2;
-    cairo_t *context,*context2;
+    //cairo_surface_t *surface,*surface2;
+    //cairo_t *context,*context2;
 
     memset(&userdata, 0, sizeof (PORT_USERDATA));
 
@@ -475,22 +486,22 @@ int main(int argc, char** argv) {
 
     bcm_host_init();
 
-    surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 600, 100);
-    context = cairo_create(surface);
-    cairo_rectangle(context, 0.0, 0.0, 600, 100);
-    cairo_set_source_rgba(context, 0.0, 0.0, 0.0, 1.0);
-    cairo_fill(context);
+    //surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 600, 100);
+    //context = cairo_create(surface);
+    //cairo_rectangle(context, 0.0, 0.0, 600, 100);
+    //cairo_set_source_rgba(context, 0.0, 0.0, 0.0, 1.0);
+    //cairo_fill(context);
 
-    userdata.overlay_buffer = cairo_image_surface_get_data(surface);
-    userdata.overlay = 1;
+    //userdata.overlay_buffer = cairo_image_surface_get_data(surface);
+    //userdata.overlay = 1;
 
-    surface2 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 600, 100);
-    context2 = cairo_create(surface2);
-    cairo_rectangle(context2, 0.0, 0.0, 600, 100);
-    cairo_set_source_rgba(context2, 0.0, 0.0, 0.0, 1.0);
-    cairo_fill(context2);
+    //surface2 = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 600, 100);
+    //context2 = cairo_create(surface2);
+    //cairo_rectangle(context2, 0.0, 0.0, 600, 100);
+    //cairo_set_source_rgba(context2, 0.0, 0.0, 0.0, 1.0);
+    //cairo_fill(context2);
 
-    userdata.overlay_buffer2 = cairo_image_surface_get_data(surface2);
+    //userdata.overlay_buffer2 = cairo_image_surface_get_data(surface2);
 
 
 
@@ -508,10 +519,10 @@ int main(int argc, char** argv) {
 
 
 
-    if (1 && setup_preview(&userdata) != 0) {
-        fprintf(stderr, "Error: setup preview %x\n", status);
-        return -1;
-    }
+  //  if (1 && setup_preview(&userdata) != 0) {
+  //      fprintf(stderr, "Error: setup preview %x\n", status);
+  //      return -1;
+  //  }
 
 
     char text[256];
@@ -520,12 +531,11 @@ int main(int argc, char** argv) {
     float lat = 47.4912;
     float lon = 8.906;
     float speed = 20.0;
-
     while (1) {
         //Update Draw to unused buffer that way there is no flickering of the overlay text if the overlay update rate
         //and video FPS are not the same
         if (userdata.overlay == 1) { 
-            cairo_rectangle(context, 0.0, 0.0, 600, 100);
+            /*cairo_rectangle(context, 0.0, 0.0, 600, 100);
             cairo_set_source_rgba(context, 0.0, 0.0, 0.0, 1.0);
             cairo_fill(context);
             cairo_move_to(context, 0.0, 0.0);
@@ -533,11 +543,11 @@ int main(int argc, char** argv) {
             cairo_move_to(context, 0.0, 30.0);
             cairo_set_font_size(context, 20.0);
             sprintf(text, "%.2fFPS GPS: %.3f, %.3f Speed %.1fkm/h b0", userdata.fps,lat,lon,speed);
-            cairo_show_text(context, text);
+            cairo_show_text(context, text);*/
             userdata.overlay = 0;
         }
         else {
-            cairo_rectangle(context2, 0.0, 0.0, 600, 100);
+            /*cairo_rectangle(context2, 0.0, 0.0, 600, 100);
             cairo_set_source_rgba(context2, 0.0, 0.0, 0.0, 1.0);
             cairo_fill(context2);
             cairo_move_to(context2, 0.0, 0.0);
@@ -546,7 +556,7 @@ int main(int argc, char** argv) {
             cairo_set_font_size(context2, 20.0);
             sprintf(text, "%.2fFPS GPS: %.3f, %.3f Speed %.1fkm/h b1", userdata.fps,lat,lon,speed);
             //sprintf(text, "%.2fFPS GPS: 0.00000, 0.00000 Speed 0km/h b1", userdata.fps);
-            cairo_show_text(context2, text);
+            cairo_show_text(context2, text);*/
             userdata.overlay = 1;
         }
 
