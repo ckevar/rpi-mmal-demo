@@ -28,7 +28,7 @@ sudo apt-get install libopencv-dev
 I have never installed opencv this way in any platform either raspberry, laptops or desktops.
 
 ### compiling 
-This is quiet tricky, I'm writting a blog on this, but for now you can follow either the [official OpenCV tutorial](https://docs.opencv.org/4.1.2/d7/d9f/tutorial_linux_install.html) or [this one](https://www.learnopencv.com/install-opencv-4-on-raspberry-pi/) by Learnopencv.com. In the last one I recommend to add this flag when running CMake:
+This is kinda tricky, I'm writting a blog on this, but for now you can follow either the [official OpenCV tutorial](https://docs.opencv.org/4.1.2/d7/d9f/tutorial_linux_install.html) or [this one](https://www.learnopencv.com/install-opencv-4-on-raspberry-pi/) by Learnopencv.com. In the last one I recommend to add this flag when running CMake:
 ```
 -DOPENCV_GENERATE_PKGCONFIG=ON
 ```
