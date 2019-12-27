@@ -12,17 +12,17 @@ By typing the fallowing on terminal it'll create the executables for each demo
 make
 ```
 * *buffer_demo* Captures Video port output in a buffer
-* *main* Connects camera component and preview component to watch the video (no tested, but compiles withou errors)
-* *video_record* the camera video port output is caught and sent to h264-Encoder, the output enconder can be save in a file like this
+* *main* Connects camera component and preview component to watch the video (no tested, but compiles without errors)
+* *video_record* the camera video port output is caught and sent to h264-built-in harwared encoder, the enconder output can be save in a file like this
 ```
 ./video_record > my_video.h264
 ```
-Remember, h264 is an encoder not a container. In order to play the video use VLC, and you can use ffmpeg for wrapping it into a MP4 container.
+Remember, h264 is an codec not a container. In order to play the video use VLC, and you can use ffmpeg for wrapping it into a MP4 container.
 
 ## Requirements
 Install the kernel headers in case it's not
 ```
-sudo apt-get install raspberrypi-kernel
+sudo apt-get install raspberrypi-kernel-headers
 ```
 for OpenCV, enter to the folder for more details
 
