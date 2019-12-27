@@ -1,34 +1,15 @@
-Simple Raspberry Pi MMAL project
+# MMAL DEMO
 
-Build
------
-0. Install pre-required packages
-   
-    $ sudo apt-get install cmake libopencv-dev
+Simple Raspberry Pi MMAL project. Based on [tasanakorn's work](https://github.com/tasanakorn/rpi-mmal-demo). The main difference lays in the fact this is for raspbian lite (no monitor) and independent from [userland](https://github.com/raspberrypi/userland.git). Another modification is the opencv_demo has been updated to work with opencv4.
 
+## Getting Started
 
-1. Place  Raspberry Pi userland project in /home/pi/src/raspberrypi/userland
-    
-    $ mkdir -p /home/pi/src/raspberrypi
-    
-    $ cd /home/pi/src/raspberrypi
-        
-    $ git clone --depth 1 https://github.com/raspberrypi/userland.git
+Most of the files here do not require another library, but one, that is inside the opencv_demo folder. 
 
+By typing the fallowing on terminal it'll create the executables for each demo
 
-2. Build pre-required libraries
-    
-    $ make -C /opt/vc/src/hello_pi/libs/vgfont
-    
-
-3. Build project 
-
-    $ mkdir build
-    
-    $ cd build
-    
-    $ cmake ../
-    
-    $ make 
-    
+```
+make
+```
+* *buffer_demo*    
     
