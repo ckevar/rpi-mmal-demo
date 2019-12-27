@@ -13,3 +13,7 @@ make
 ```
 * *buffer_demo*    
     
+# Acknowledgement 
+* [Multi-Media Abstraction Layer (MMAL)](http://www.jvcref.com/files/PI/documentation/html/index.html). Draft Version 0.1.
+* Picamera, [Camera Harware](https://picamera.readthedocs.io/en/release-1.10/fov.html) 
+* OpenCV4 docs, [OpenCV modules](https://docs.opencv.org/4.1.2/index.html)
