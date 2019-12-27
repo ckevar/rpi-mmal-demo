@@ -32,6 +32,10 @@ This is quiet tricky, I'm writting a blog on this, but for now you can follow ei
 ```
 -DOPENCV_GENERATE_PKGCONFIG=ON
 ```
+I also recommend to use two cores at compile time instead of the 4 the raspberry has
+```
+make -j2
+```
 This installed **opencv4.pc**, this used to call the opencv library when compiling by Makefile
 ## Acknowledgement 
 * [Multi-Media Abstraction Layer (MMAL)](http://www.jvcref.com/files/PI/documentation/html/index.html). Draft Version 0.1.
