@@ -1,7 +1,6 @@
-/*
+/* Modified: by ckevar Dec 21, 2019, 12:59 PM
+ *
  * File:   opencv_demo.c
- * Modification for opencv4: by ckevar
- * Modified date on Sat Dec 21, 2019, 12:58PM
  *
  * Author: Tasanakorn
  *
