@@ -311,7 +311,7 @@ int main(int argc, char** argv) {
     struct timespec t2;
     clock_gettime(CLOCK_MONOTONIC, &t1);
 
-    GRAPHICS_RESOURCE_HANDLE img_overlay;
+//    GRAPHICS_RESOURCE_HANDLE img_overlay;
 //    GRAPHICS_RESOURCE_HANDLE img_overlay2;
 
 //    gx_graphics_init("/opt/vc/src/hello_pi/hello_font");
